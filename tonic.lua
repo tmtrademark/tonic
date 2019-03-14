@@ -12,7 +12,7 @@ items = require('items')
 buffs = require('buffup')
 
 local defaults = {
-	debug = true,
+	debug = false,
 	send_all_delay = 0.4,
 }
 
@@ -101,9 +101,24 @@ local function handle_drink(item, args)
   drink(quotify(item))
 end
 
+local function handle_help()
+	log("//tonic <item> -- Uses the specified item. Use quotes and spell it correctly")
+	log("//tonic <shortcut> -- Uses the specific item that has a shortcut. Shortcuts are:")
+	for k,v in pairs(items) do
+		-- todo: this should be alphabetical
+		log(k..": "..v.name)
+	end
+	log("//tonic buffup -- uses all the items defined in buffs.lua in sequence.")
+	log("//tonic a <command> -- Send the command to all boxes that have tonic enabled, eg `//tonic a reraise`")
+end
+
 local function handle_command(cmd, ...)
   local args = T{...}
-  handle_drink(cmd, args)
+	if "help" == cmd then
+		handle_help()
+	else
+	  handle_drink(cmd, args)
+	end
 end
 
 -- handle ipc message
